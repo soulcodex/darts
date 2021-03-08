@@ -12,3 +12,5 @@
 */
 
 require base_path('routes/api/entity/users.php');
+
+require base_path('routes/api/entity/nightclubs.php');

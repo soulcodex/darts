@@ -2,70 +2,59 @@
 
 namespace App\Infrastructure\Persistence\Eloquent\Repository;
 
-use App\Domain\Entity\User\User;
-use App\Domain\Entity\User\UserRepositoryInterface;
+use App\Domain\Entity\Nightclub\Nightclub;
+use App\Domain\Entity\Nightclub\NightclubRepositoryInterface;
 use App\Infrastructure\Persistence\Eloquent\AbstractRepository;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class UserRepository extends AbstractRepository implements UserRepositoryInterface
+class NightclubRepository extends AbstractRepository implements NightclubRepositoryInterface
 {
     /**
-     * UserRepository constructor.
-     * @param User $model
+     * NightclubRepository constructor.
+     * @param Nightclub $model
      */
-    public function __construct(User $model)
+    public function __construct(Nightclub $model)
     {
         parent::__construct($model);
     }
 
     /**
      * @param int $id
-     * @return User|null
+     * @return Nightclub|null
      */
-    public function find(int $id): ?User
+    public function find(int $id): ?Nightclub
     {
         return $this->model->find($id);
     }
 
     /**
      * @param int $id
-     * @return User
-     * @throws ModelNotFoundException
+     * @return Nightclub
      */
-    public function findOrFail(int $id): User
+    public function findOrFail(int $id): Nightclub
     {
-        $user = $this->find($id);
+        $club = $this->find($id);
 
-        if($user instanceof User) {
-            return $user;
+        if($club instanceof Nightclub) {
+            return $club;
         }
 
         throw new ModelNotFoundException(
-            sprintf(
-                'Model %s was not found with id %d',
-                User::class,
-                $id
-            )
+            sprintf('Model %s with id %d not found', Nightclub::class, $id)
         );
     }
 
     /**
-     * @param User $user
-     * @return User
+     * @param Nightclub $club
+     * @return Nightclub
      * @throws Exception
      */
-    public function add(User $user): User
+    public function add(Nightclub $club): Nightclub
     {
-        $userExist = $this->find($user->id);
-
-        if($userExist instanceof User) {
-            throw new Exception('Exist');
-        }
-
-        return $user->create();
+        return $this->model->create($club->getAttributes());
     }
 
     /**
@@ -74,9 +63,9 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      */
     public function update(int $id, array $attributes): void
     {
-        $user = $this->findOrFail($id);
+        $club = $this->findOrFail($id);
 
-        $user->update($attributes);
+        $club->update($attributes);
     }
 
     /**
@@ -85,9 +74,9 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      */
     public function delete(int $id): void
     {
-        $user = $this->findOrFail($id);
+        $club = $this->findOrFail($id);
 
-        $user->delete();
+        $club->delete();
     }
 
     /**
